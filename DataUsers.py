@@ -3,7 +3,9 @@ import openai
 import config
 
 conf = config.conf()                                        # тут есть переменные из config.json
-
+def error_print(e):
+    if(conf.print_DataUsers_errors):
+                print("Произошла ошибка: ", e)
 class ai:
     openai.api_key = conf.OpenAi_TOKEN
         
@@ -24,24 +26,19 @@ class ai:
             return completion.choices[0].message.content    # возвращаем ответ сети
         
         except openai.error.InvalidRequestError as e:       # эта ошибка возникает если prompt больше 4000 токенов, нужно удалить из него первые сообщения 
-            if(conf.print_DataUsers_errors):
-                print("Произошла ошибка: ", e)
+            error_print(e)
             return 1
         except ValueError as e:                             # другие ошибки
-            if(conf.print_DataUsers_errors):
-                print("Произошла ошибка: ", e)
+            error_print(e)
             return 2
         except openai.error.OpenAIError as e:
-            if(conf.print_DataUsers_errors):
-                print("Произошла ошибка: ", e)
+            error_print(e)
             return 3
         except openai.error.AuthenticationError as e:
-            if(conf.print_DataUsers_errors):
-                print("Произошла ошибка: ", e)
+            error_print(e)
             return 4
         except Exception as e:
-            if(conf.print_DataUsers_errors):
-                print("Произошла ошибка: ", e)
+            error_print(e)
             return 5
    
     
@@ -59,8 +56,7 @@ class users_:
             self.musers = []                                # создаем массив в которм будут пользователи - users_()
             self.AI = ai(openai.ChatCompletion)
         except Exception as e:
-            if(conf.print_DataUsers_errors):
-                print("Произошла ошибка: ", e)   
+            error_print(e)   
 
     def add_user(self,name):                                # если пользователя с таким именем нет созадаем его.
         try:
@@ -80,8 +76,7 @@ class users_:
             if(conf.print_messages):   
                         print( 'add user - '+str(name) )
         except Exception as e:
-            if(conf.print_DataUsers_errors):
-                print("Произошла ошибка: ", e)
+            error_print(e)
             
     def del_storeg(self,name):
         try:
@@ -93,8 +88,7 @@ class users_:
 
                 
         except Exception as e:
-            if(conf.print_DataUsers_errors):
-                print("Произошла ошибка: ", e)
+            error_print(e)
         
     def del_n_stor(self, stor):                             # удаляет около 20% символов из начала истории сообщений, если по одному их удалять то ответ сети прерываться будет
         
@@ -128,8 +122,7 @@ class users_:
                         try:
                             self.musers[i].storeg = self.del_n_stor( self.musers[i].storeg)  # удаляем часть сообщений 
                         except Exception as e:
-                            if(conf.print_DataUsers_errors):
-                                print("Произошла ошибка: ", e)
+                            error_print(e)
                             break
 
                     elif ret == 2 or ret == 3 or ret == 4 or ret == 5  :
