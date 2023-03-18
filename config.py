@@ -6,7 +6,7 @@ class conf:         # достаем переменные из json
     def __init__(self):
         config = 0
     # Открываем файл
-        with open("config.json", "r") as f:
+        with open("C:\config.json", "r") as f:
             config = json.load(f)    
         self.print_messages = config["print_messages"]
         self.print_DataUsers_errors = config["print_DataUsers_errors"]
