@@ -1,3 +1,12 @@
+
+#
+#
+#
+#   оно не работает 
+#
+#
+#
+
 import sqlite3
 
 class SQLiteData:
