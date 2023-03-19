@@ -1,0 +1,18 @@
+# 1 включить 0 выключить
+# выводить ли в консоль сообщения
+
+print_messages: 1
+print_DataUsers_errors: 1
+print_SQL_errors: 1
+
+# записывать данные в DB
+
+use_sql: 1,
+
+# информация о сервере SQL
+
+host: 192.168.1.99
+database: BotAI
+user: TgBot
+password: toor
+port: 5432
