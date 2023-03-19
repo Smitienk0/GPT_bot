@@ -1,22 +1,48 @@
-import json
+import dataclasses
+from functools import lru_cache
+
+import loguru
 
 
-class conf:         # достаем переменные из json 
+@dataclasses.dataclass
+class Config:
+    print_messages: str
+    print_DataUsers_errors: str
+    print_SQL_errors: str
+    use_sql: str
+    host: str
+    database: str
+    user: str
+    password: str
+    port: str
+    Tg_TOKEN: str
+    OpenAi_TOKEN: str
 
-    def __init__(self):
-        config = 0
-    # Открываем файл
-        with open("C:\config.json", "r") as f:
-            config = json.load(f)    
-        self.print_messages = config["print_messages"]
-        self.print_DataUsers_errors = config["print_DataUsers_errors"]
-        self.print_SQL_errors = config["print_SQL_errors"]
-        self.use_sql = config["use_sql"]
-        self.host = config["host"]
-        self.database =config["database"]
-        self.user = config["user"]
-        self.password = config["password"]
-        self.port =config["port"]
-        self.Tg_TOKEN = config["Tg_TOKEN"]
-        self.OpenAi_TOKEN = config["OpenAi_TOKEN"]
-   
+    @property
+    @lru_cache()
+    def logger(self):
+        return loguru.logger
+
+    def __hash__(self):
+        return id(self)
+
+
+def get_from_json(file, sec_file):
+    import json
+    with open(file) as f, open(sec_file) as sf:
+        configs = json.load(f)
+        secrets = json.load(sf)
+        return Config(**configs, **secrets)
+
+
+def get_from_yaml(file, sec_file):
+    import yaml
+    with open(file) as f, open(sec_file) as sf:
+        configs = yaml.load(f, yaml.Loader)
+        secrets = yaml.load(sf, yaml.Loader)
+        return Config(**configs, **secrets)
+
+
+@lru_cache
+def config():
+    return get_from_yaml('config.yaml', 'tokens.yaml')
